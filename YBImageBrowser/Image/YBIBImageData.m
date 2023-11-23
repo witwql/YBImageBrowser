@@ -121,6 +121,10 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
             return;
         }
         // Ensure the best display effect.
+        if (size.width <= 0 || size.height <= 0) {
+            self.loadingStatus = YBIBImageLoadingStatusNone;
+            return;
+        }
         UIGraphicsBeginImageContextWithOptions(size, NO, UIScreen.mainScreen.scale);
         [self.originImage drawInRect:CGRectMake(0, 0, size.width, size.height)];
         if (self->_freezing) {
@@ -426,6 +430,11 @@ static dispatch_queue_t YBIBImageProcessingQueue(void) {
         }
         
         // Ensure the best display effect.
+        if (size.width <= 0 || size.height <= 0) {
+            complete(nil);
+            if (cgImage) CGImageRelease(cgImage);
+            return;
+        }
         UIGraphicsBeginImageContextWithOptions(size, NO, UIScreen.mainScreen.scale);
         [tmpImage drawInRect:CGRectMake(0, 0, size.width, size.height)];
         if (isCancelled()) {
